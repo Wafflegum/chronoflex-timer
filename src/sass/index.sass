@@ -7,6 +7,8 @@
     --title-size: 2rem
     --font-size: 1rem
 
+    --navbar-height: 5rem
+
 @font-face
     font-family: Montserrat
     src: url("Montserrat-Regular.ttf")
@@ -25,12 +27,16 @@ body
 
     font-size: 1rem
 
-.page-container
+.scrollsnap-page-container
     width: 100%
-    height: 100%
+    height: calc(100% - var(--navbar-height) + 1rem)
 
     padding: 1.5rem
     box-sizing: border-box
+
+    display: flex
+    flex-direction: column
+    flex-wrap: nowrap
 
     z-index: 1
 
@@ -42,21 +48,72 @@ body
     width: 100%
     height: 100%
 
-    .timer-field
-        input
-            border: 1px solid #1b1b1b
-            outline: 0
+    overflow: auto
 
-            background: rgb(17, 17, 17)
+    scroll-snap-type: y mandatory
 
-            border-radius: 1rem
+    .timer-wrapper
+        scroll-snap-align: start
 
-    .button-container
-        height: 2rem
+        width: 100%
+        height: 100%
 
-        display: inline-block
+        padding: 1rem
+        box-sizing: border-box
 
-        margin-top: auto
         display: flex
+        flex-direction: column
+
         justify-content: center
         align-items: center
+
+        gap: 1rem
+
+        .timer-display
+            font-size: 3rem
+
+        .timer-field
+
+            input
+                border: 1px solid #1b1b1b
+                outline: 0
+
+                // background: rgb(17, 17, 17)
+
+                border-radius: 1rem
+
+                text-align: center
+                font-family: inherit
+
+        .button-container
+            width: fit-content
+            height: fit-content
+
+            display: block
+
+            display: flex
+            justify-content: center
+            align-items: center
+            gap: 1rem
+
+            button
+                padding: 1rem 1.5rem
+
+                border: 0
+                border-radius: 0.5rem
+                outline: 0
+
+                font-family: inherit
+                font-size: inherit
+
+                background: light-dark(#e4e4e4, #202020)
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button
+    -webkit-appearance: none
+    margin: 0
+
+/* Firefox */
+input[type=number]
+    -moz-appearance: textfield

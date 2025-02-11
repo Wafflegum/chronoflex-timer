@@ -70,9 +70,9 @@ function NormalTimer() {
 
 	return (
 		<>
-			<div className="timer-container">
+			<div className="timer-wrapper">
 				{isRunning ? (
-					<div className="timer-wrapper">{`${timeLeft.hours.toString().padStart(2, "0")}:${timeLeft.minutes
+					<div className="timer-display">{`${timeLeft.hours.toString().padStart(2, "0")}:${timeLeft.minutes
 						.toString()
 						.padStart(2, "0")}:${timeLeft.seconds.toString().padStart(2, "0")}`}</div>
 				) : (

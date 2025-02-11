@@ -5,9 +5,12 @@ import NormalTimer from "../components/timers/NormalTimer";
 function Home() {
 	return (
 		<>
-			<div className="page-container">
+			<div className="scrollsnap-page-container">
 				<div className="title">Timer</div>
-				<NormalTimer />
+				<div className="timer-container">
+					<NormalTimer />
+					<NormalTimer />
+				</div>
 			</div>
 		</>
 	);
