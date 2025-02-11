@@ -25,6 +25,10 @@ function NormalTimer() {
 		setIsRunning(true);
 	}
 
+	function handlePauseTime() {
+		setIsRunning(false);
+	}
+
 	useEffect(() => {
 		if (!isRunning) return;
 
@@ -50,21 +54,57 @@ function NormalTimer() {
 		return () => clearInterval(timer);
 	});
 
+	function inputCharacterLimiter(e) {
+		const invalidChars = ["-", "+", "=", "e"];
+
+		// avoids user from inputting special characters such as E and +
+		if (invalidChars.includes(e.key)) {
+			e.preventDefault();
+		}
+
+		// This will limit the characters to two. It checks if the username is a number, if it is, then block it. Otherwise, if it's a backspace, proceed.
+		if (!isNaN(e.key) && e.target.value.length >= 2) {
+			e.preventDefault();
+		}
+	}
+
 	return (
 		<>
-			{isRunning ? (
-				<div className="timer-wrapper">{`${timeLeft.hours.toString().padStart(2, "0")}:${timeLeft.minutes
-					.toString()
-					.padStart(2, "0")}:${timeLeft.seconds.toString().padStart(2, "0")}`}</div>
-			) : (
-				<div className="timer-field">
-					<input type="number" id="hours" ref={hoursRef} placeholder="00" />
-					<input type="number" id="minutes" ref={minutesRef} placeholder="00" />
-					<input type="number" id="seconds" ref={secondsRef} placeholder="00" />
+			<div className="timer-container">
+				{isRunning ? (
+					<div className="timer-wrapper">{`${timeLeft.hours.toString().padStart(2, "0")}:${timeLeft.minutes
+						.toString()
+						.padStart(2, "0")}:${timeLeft.seconds.toString().padStart(2, "0")}`}</div>
+				) : (
+					<div className="timer-field">
+						<input
+							type="number"
+							id="hours"
+							ref={hoursRef}
+							placeholder="00"
+							onKeyDown={inputCharacterLimiter}
+						/>
+						<input
+							type="number"
+							id="minutes"
+							ref={minutesRef}
+							placeholder="00"
+							onKeyDown={inputCharacterLimiter}
+						/>
+						<input
+							type="number"
+							id="seconds"
+							ref={secondsRef}
+							placeholder="00"
+							onKeyDown={inputCharacterLimiter}
+						/>
+					</div>
+				)}
+				<div className="button-container">
+					<button onClick={() => handleStartTime()}>Start</button>
+					<button onClick={handlePauseTime}>Pause</button>
 				</div>
-			)}
-			<button onClick={() => handleStartTime()}>Start</button>
-			<button>Pause</button>
+			</div>
 		</>
 	);
 }
