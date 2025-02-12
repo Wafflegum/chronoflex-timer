@@ -7,9 +7,14 @@ function NormalTimer() {
 	const hoursRef = useRef();
 	const minutesRef = useRef();
 	const secondsRef = useRef();
+	const timerDisplayRef = useRef();
+
+	const [timerDuration, setTimerDuration] = useState();
+	const [timerProgress, setTimerProgress] = useState();
 
 	const calculateTimeLeft = () => {
 		const totalSeconds = hoursRef.current.value * 3600 + minutesRef.current.value * 60 + secondsRef.current.value;
+		setTimerDuration(totalSeconds);
 
 		return {
 			hours: Math.floor(totalSeconds / 3600),
@@ -42,6 +47,8 @@ function NormalTimer() {
 				}
 
 				const newTotalSeconds = totalSeconds - 1;
+				// setTimerProgress((newTotalSeconds / timerDuration) * 100);
+				timerDisplayRef.current.style.setProperty("--progress", `${(newTotalSeconds / timerDuration) * 100}%`);
 
 				return {
 					hours: Math.floor(newTotalSeconds / 3600),
@@ -72,9 +79,14 @@ function NormalTimer() {
 		<>
 			<div className="timer-wrapper">
 				{isRunning ? (
-					<div className="timer-display">{`${timeLeft.hours.toString().padStart(2, "0")}:${timeLeft.minutes
-						.toString()
-						.padStart(2, "0")}:${timeLeft.seconds.toString().padStart(2, "0")}`}</div>
+					<div
+						className="timer-display"
+						data-valuenow={`${timeLeft.hours.toString().padStart(2, "0")}:${timeLeft.minutes
+							.toString()
+							.padStart(2, "0")}:${timeLeft.seconds.toString().padStart(2, "0")}`}
+						data-progress={`${timerProgress}%`}
+						ref={timerDisplayRef}
+					></div>
 				) : (
 					<div className="timer-field">
 						<input

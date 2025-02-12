@@ -53,6 +53,8 @@ body
     scroll-snap-type: y mandatory
 
     .timer-wrapper
+        --width-size: 18rem /* variable for circle */
+
         scroll-snap-align: start
 
         width: 100%
@@ -67,10 +69,41 @@ body
         justify-content: center
         align-items: center
 
+        position: relative
+
         gap: 1rem
 
         .timer-display
+            width: var(--width-size)
+            aspect-ratio: 1 / 1
+            border-radius: 50%
+
+            background: conic-gradient(
+                rgb(255, 247, 222) var(--progress, 100%),
+                rgb(46, 46, 46) 0%
+            )
+
+            display: flex
+            justify-content: center
+            align-items: center
+
             font-size: 3rem
+
+            &::after
+                content: attr(data-valuenow)
+
+                width: 80%
+                border-radius: inherit
+
+                aspect-ratio: 1 / 1
+
+                position: absolute
+
+                display: flex
+                justify-content: center
+                align-items: center
+
+                background: light-dark(var(--background-color))
 
         .timer-field
 
