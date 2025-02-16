@@ -1,8 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import "../../css/components/NormalTimer.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlay, faPause, faStop } from "@fortawesome/free-solid-svg-icons";
 
 function NormalTimer() {
 	const [isRunning, setIsRunning] = useState(false);
+	const [isPaused, setIsPaused] = useState(false);
 
 	const hoursRef = useRef();
 	const minutesRef = useRef();
@@ -31,11 +34,15 @@ function NormalTimer() {
 	}
 
 	function handlePauseTime() {
+		setIsPaused((prev) => !prev);
+	}
+
+	function handleStopTime() {
 		setIsRunning(false);
 	}
 
 	useEffect(() => {
-		if (!isRunning) return;
+		if (!isRunning || isPaused) return;
 
 		const timer = setInterval(() => {
 			setTimeLeft((prevTime) => {
@@ -112,10 +119,29 @@ function NormalTimer() {
 						/>
 					</div>
 				)}
-				<div className="button-container">
-					<button onClick={() => handleStartTime()}>Start</button>
-					<button onClick={handlePauseTime}>Pause</button>
-				</div>
+				{isRunning ? (
+					<div className="button-container">
+						{!isPaused ? (
+							<button onClick={handlePauseTime}>
+								<FontAwesomeIcon icon={faPause} />
+							</button>
+						) : (
+							<button onClick={handlePauseTime}>
+								<FontAwesomeIcon icon={faPlay} />
+							</button>
+						)}
+
+						<button onClick={handlePauseTime}>
+							<FontAwesomeIcon icon={faStop} />
+						</button>
+					</div>
+				) : (
+					<div className="button-container">
+						<button onClick={() => handleStartTime()}>
+							<FontAwesomeIcon icon={faPlay} />
+						</button>
+					</div>
+				)}
 			</div>
 		</>
 	);

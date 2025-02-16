@@ -6,7 +6,7 @@ function Home() {
 	return (
 		<>
 			<div className="scrollsnap-page-container">
-				<div className="title">Timer</div>
+				<div className="title">ChronoFlex Timer</div>
 				<div className="timer-container">
 					<NormalTimer />
 					<NormalTimer />
