@@ -1,9 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "../../css/components/NormalTimer.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay, faPause, faStop } from "@fortawesome/free-solid-svg-icons";
 
 function NormalTimer() {
+	const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
+
 	const [isRunning, setIsRunning] = useState(false);
 	const [isPaused, setIsPaused] = useState(false);
 
@@ -13,7 +15,6 @@ function NormalTimer() {
 	const timerDisplayRef = useRef();
 
 	const [timerDuration, setTimerDuration] = useState();
-	const [timerProgress, setTimerProgress] = useState();
 
 	const calculateTimeLeft = () => {
 		const totalSeconds = hoursRef.current.value * 3600 + minutesRef.current.value * 60 + secondsRef.current.value;
@@ -26,20 +27,64 @@ function NormalTimer() {
 		};
 	};
 
-	const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
-
 	function handleStartTime() {
-		setTimeLeft(calculateTimeLeft());
+		const formatTime = calculateTimeLeft();
+		setTimeLeft(formatTime);
 		setIsRunning(true);
+
+		const timerSession = {
+			isRunning: true,
+			isPaused: isPaused,
+			timeLeft: calculateTimeLeft(),
+			startTime: Date.now(),
+			timerDuration: hoursRef.current.value * 3600 + minutesRef.current.value * 60 + secondsRef.current.value,
+		};
+
+		localStorage.setItem("timerSession", JSON.stringify(timerSession));
+		console.log(timerSession.timerDuration);
 	}
 
 	function handlePauseTime() {
 		setIsPaused((prev) => !prev);
+		const currentTimerSession = JSON.parse(localStorage.getItem("timerSession")) || {};
+
+		localStorage.setItem(
+			"timerSession",
+			JSON.stringify({ ...currentTimerSession, isPaused: JSON.stringify(isPaused) })
+		);
 	}
 
 	function handleStopTime() {
+		setIsPaused(false);
 		setIsRunning(false);
+
+		localStorage.removeItem("timerSession");
 	}
+
+	useEffect(() => {
+		const storedTimerSession = JSON.parse(localStorage.getItem("timerSession"));
+
+		if (storedTimerSession) {
+			const parsedTimeLeft = storedTimerSession.timeLeft;
+			const startTime = storedTimerSession.startTime;
+			const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+			const remainingTime = Math.max(
+				parsedTimeLeft.hours * 3600 + parsedTimeLeft.minutes * 60 + parsedTimeLeft.seconds - elapsedSeconds,
+				0
+			);
+
+			setTimeLeft({
+				hours: Math.floor(remainingTime / 3600),
+				minutes: Math.floor((remainingTime % 3600) / 60),
+				seconds: remainingTime % 60,
+			});
+
+			setTimerDuration(storedTimerSession.timerDuration);
+
+			setIsRunning(storedTimerSession.isRunning);
+			setIsPaused(storedTimerSession.isPaused);
+		}
+	}, []);
 
 	useEffect(() => {
 		if (!isRunning || isPaused) return;
@@ -54,14 +99,21 @@ function NormalTimer() {
 				}
 
 				const newTotalSeconds = totalSeconds - 1;
+
 				// setTimerProgress((newTotalSeconds / timerDuration) * 100);
 				timerDisplayRef.current.style.setProperty("--progress", `${(newTotalSeconds / timerDuration) * 100}%`);
 
-				return {
+				const time = {
 					hours: Math.floor(newTotalSeconds / 3600),
 					minutes: Math.floor((newTotalSeconds % 3600) / 60),
 					seconds: newTotalSeconds % 60,
 				};
+
+				const storedTimerSession = JSON.parse(localStorage.getItem("timerSession"));
+
+				localStorage.setItem("timerSession", JSON.stringify({ ...storedTimerSession, timeLeft: time }));
+
+				return time;
 			});
 		}, 1000);
 
@@ -91,7 +143,6 @@ function NormalTimer() {
 						data-valuenow={`${timeLeft.hours.toString().padStart(2, "0")}:${timeLeft.minutes
 							.toString()
 							.padStart(2, "0")}:${timeLeft.seconds.toString().padStart(2, "0")}`}
-						data-progress={`${timerProgress}%`}
 						ref={timerDisplayRef}
 					></div>
 				) : (
@@ -131,7 +182,7 @@ function NormalTimer() {
 							</button>
 						)}
 
-						<button onClick={handlePauseTime}>
+						<button onClick={handleStopTime}>
 							<FontAwesomeIcon icon={faStop} />
 						</button>
 					</div>

@@ -13,7 +13,7 @@ function App() {
 				<Route path="/" element={<Home />} />
 				<Route path="/history" element={<History />} />
 			</Routes>
-			<div className="navbar-container">
+			<nav className="navbar-container">
 				<Link to="/" className="nav-wrapper">
 					<div className="icon">
 						<FontAwesomeIcon icon={faStopwatch} />
@@ -29,7 +29,7 @@ function App() {
 						<FontAwesomeIcon icon={faGear} />
 					</div>
 				</Link>
-			</div>
+			</nav>
 		</>
 	);
 }
