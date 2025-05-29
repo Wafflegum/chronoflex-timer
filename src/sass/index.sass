@@ -4,6 +4,9 @@
     --background-color: #ffffff, #141414
     --text-color: #161616, #d8d8d8
 
+    --accent-color: rgb(185, 166, 111), rgb(255, 247, 222)
+    --progress-trail-color: #c0c0c0, #303030
+
     --title-size: 2rem
     --font-size: 1rem
 
@@ -74,36 +77,19 @@ body
         gap: 1rem
 
         .timer-display
-            width: var(--width-size)
-            aspect-ratio: 1 / 1
-            border-radius: 50%
-
-            background: conic-gradient(
-                rgb(255, 247, 222) var(--progress, 100%),
-                rgb(46, 46, 46) 0%
-            )
-
             display: flex
             justify-content: center
             align-items: center
 
             font-size: 3rem
 
-            &::after
-                content: attr(data-valuenow)
+            .CircularProgressbar
 
-                width: 17.5rem
-                border-radius: inherit
+                &-path
+                    stroke: light-dark(var(--accent-color))
 
-                aspect-ratio: 1 / 1
-
-                position: absolute
-
-                display: flex
-                justify-content: center
-                align-items: center
-
-                background: light-dark(var(--background-color))
+                &-trail
+                    stroke: light-dark(var(--progress-trail-color))
 
         .timer-field
 

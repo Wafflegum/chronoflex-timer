@@ -1,10 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import "../../css/components/NormalTimer.css";
+import "../../css/components/Timer.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay, faPause, faStop } from "@fortawesome/free-solid-svg-icons";
+import { buildStyles, CircularProgressbar, CircularProgressbarWithChildren } from "react-circular-progressbar";
 
-function NormalTimer() {
+import "react-circular-progressbar/dist/styles.css";
+
+function NormalTimer({ id }) {
 	const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
+	const [secondsRemaining, setSecondsRemaining] = useState(0);
 
 	const [isRunning, setIsRunning] = useState(false);
 	const [isPaused, setIsPaused] = useState(false);
@@ -15,6 +19,7 @@ function NormalTimer() {
 	const timerDisplayRef = useRef();
 
 	const [timerDuration, setTimerDuration] = useState();
+	const [label, setLabel] = useState("label");
 
 	const calculateTimeLeft = () => {
 		const totalSeconds = hoursRef.current.value * 3600 + minutesRef.current.value * 60 + secondsRef.current.value;
@@ -33,6 +38,9 @@ function NormalTimer() {
 		setIsRunning(true);
 
 		const timerSession = {
+			id: id,
+			timerLabel: "",
+			type: "normal",
 			isRunning: true,
 			isPaused: isPaused,
 			timeLeft: calculateTimeLeft(),
@@ -61,6 +69,7 @@ function NormalTimer() {
 		localStorage.removeItem("timerSession");
 	}
 
+	// Startup boot, load timer if it exists
 	useEffect(() => {
 		const storedTimerSession = JSON.parse(localStorage.getItem("timerSession"));
 
@@ -86,6 +95,7 @@ function NormalTimer() {
 		}
 	}, []);
 
+	// Timer function
 	useEffect(() => {
 		if (!isRunning || isPaused) return;
 
@@ -101,7 +111,9 @@ function NormalTimer() {
 				const newTotalSeconds = totalSeconds - 1;
 
 				// setTimerProgress((newTotalSeconds / timerDuration) * 100);
-				timerDisplayRef.current.style.setProperty("--progress", `${(newTotalSeconds / timerDuration) * 100}%`);
+				// timerDisplayRef.current.style.setProperty("--progress", `${(newTotalSeconds / timerDuration) * 100}%`);
+
+				setSecondsRemaining((newTotalSeconds / timerDuration) * 100);
 
 				const time = {
 					hours: Math.floor(newTotalSeconds / 3600),
@@ -120,6 +132,7 @@ function NormalTimer() {
 		return () => clearInterval(timer);
 	});
 
+	// Blocks special characters to be inputted on the timers
 	function inputCharacterLimiter(e) {
 		const invalidChars = ["-", "+", "=", "e"];
 
@@ -137,14 +150,23 @@ function NormalTimer() {
 	return (
 		<>
 			<div className="timer-wrapper">
+				<div className="label">{label}</div>
 				{isRunning ? (
-					<div
-						className="timer-display"
-						data-valuenow={`${timeLeft.hours.toString().padStart(2, "0")}:${timeLeft.minutes
-							.toString()
-							.padStart(2, "0")}:${timeLeft.seconds.toString().padStart(2, "0")}`}
-						ref={timerDisplayRef}
-					></div>
+					// <div
+					// 	className="timer-display"
+					// 	data-valuenow={`${timeLeft.hours.toString().padStart(2, "0")}:${timeLeft.minutes
+					// 		.toString()
+					// 		.padStart(2, "0")}:${timeLeft.seconds.toString().padStart(2, "0")}`}
+					// 	ref={timerDisplayRef}
+					// ></div>
+
+					<div className="timer-display">
+						<CircularProgressbarWithChildren value={secondsRemaining} strokeWidth={2}>
+							{`${timeLeft.hours.toString().padStart(2, "0")}:${timeLeft.minutes
+								.toString()
+								.padStart(2, "0")}:${timeLeft.seconds.toString().padStart(2, "0")}`}
+						</CircularProgressbarWithChildren>
+					</div>
 				) : (
 					<div className="timer-field">
 						<input

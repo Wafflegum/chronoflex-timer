@@ -1,6 +1,7 @@
-import React from "react";
 import "../css/Home.css";
 import NormalTimer from "../components/timers/NormalTimer";
+import { nanoid } from "nanoid";
+import Stopwatch from "../components/timers/Stopwatch";
 
 function Home() {
 	return (
@@ -10,6 +11,7 @@ function Home() {
 				<div className="timer-container">
 					<NormalTimer />
 					<NormalTimer />
+					<Stopwatch />
 				</div>
 			</div>
 		</>
