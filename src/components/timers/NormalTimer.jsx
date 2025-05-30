@@ -19,7 +19,7 @@ function NormalTimer({ id }) {
 	const timerDisplayRef = useRef();
 
 	const [timerDuration, setTimerDuration] = useState();
-	const [label, setLabel] = useState("label");
+	const [label, setLabel] = useState("JUMP ROPE");
 
 	const calculateTimeLeft = () => {
 		const totalSeconds = hoursRef.current.value * 3600 + minutesRef.current.value * 60 + secondsRef.current.value;
@@ -150,7 +150,10 @@ function NormalTimer({ id }) {
 	return (
 		<>
 			<div className="timer-wrapper">
-				<div className="label">{label}</div>
+				<div className="header">
+					<div className="timer-type">Countdown</div>
+					<div className="timer-label">{label}</div>
+				</div>
 				{isRunning ? (
 					// <div
 					// 	className="timer-display"
