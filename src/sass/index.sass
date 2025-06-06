@@ -39,7 +39,6 @@ body
     width: 100%
     height: calc(100% - var(--navbar-height) + 1rem)
 
-    padding: 1.5rem
     box-sizing: border-box
 
     display: flex
@@ -68,7 +67,7 @@ body
         width: 100%
         height: 100%
 
-        padding: 1rem
+        padding: 1.5rem
         box-sizing: border-box
 
         display: flex
@@ -89,17 +88,18 @@ body
             align-items: center
             gap: 0.25rem
 
-            .timer-type
-                position: absolute
+            position: absolute
 
-                top: 0%
+            top: 5%
+
+            .timer-type
                 font-size: var(--title-size)
                 // color: light-dark(var(--text-secondary-color))
 
                 font-weight: 600
 
-            .timer-label
-                font-size: 1.25rem
+        .timer-label
+            font-size: 1.25rem
 
         .timer-display
             display: flex
@@ -163,6 +163,28 @@ body
                 font-size: 2.5rem
 
                 background: none
+
+.btn-icon
+    background: none
+    border: 0
+    outline-color: transparent
+
+    padding: 0.25rem
+
+    aspect-ratio: 1 / 1
+
+    font-size: 1.5rem
+    font-family: inherit
+    color: inherit
+
+    transition: background 0.15s ease, color 0.15s ease, scale 0.2s ease
+
+    border-radius: 50%
+
+    &:active
+        scale: 0.5
+        background: light-dark(var(--text-color))
+        color: light-dark(var(--background-color))
 
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,

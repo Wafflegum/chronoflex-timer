@@ -6,12 +6,17 @@ import { buildStyles, CircularProgressbar, CircularProgressbarWithChildren } fro
 
 import "react-circular-progressbar/dist/styles.css";
 
+import alarmAudio from "/audio/ding-2.mp3";
+import { inputCharacterLimiter } from "../../utilities";
+
 function NormalTimer({ id }) {
 	const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
 	const [secondsRemaining, setSecondsRemaining] = useState(0);
 
 	const [isRunning, setIsRunning] = useState(false);
 	const [isPaused, setIsPaused] = useState(false);
+
+	const [state, setState] = useState("stopped");
 
 	const hoursRef = useRef();
 	const minutesRef = useRef();
@@ -34,6 +39,11 @@ function NormalTimer({ id }) {
 
 	function handleStartTime() {
 		const formatTime = calculateTimeLeft();
+
+		if (formatTime.hours * 3600 + formatTime.minutes * 60 + formatTime.seconds <= 0) {
+			return;
+		}
+
 		setTimeLeft(formatTime);
 		setIsRunning(true);
 
@@ -49,7 +59,6 @@ function NormalTimer({ id }) {
 		};
 
 		localStorage.setItem("timerSession", JSON.stringify(timerSession));
-		console.log(timerSession.timerDuration);
 	}
 
 	function handlePauseTime() {
@@ -103,8 +112,14 @@ function NormalTimer({ id }) {
 			setTimeLeft((prevTime) => {
 				const totalSeconds = prevTime.hours * 3600 + prevTime.minutes * 60 + prevTime.seconds;
 				if (totalSeconds <= 0) {
-					clearInterval();
+					clearInterval(timer);
+
+					const audio = new Audio(alarmAudio);
+					audio.play();
+
 					setIsRunning(false);
+					localStorage.removeItem("timerSession");
+
 					return { hours: 0, minutes: 0, seconds: 0 };
 				}
 
@@ -130,30 +145,15 @@ function NormalTimer({ id }) {
 		}, 1000);
 
 		return () => clearInterval(timer);
-	});
-
-	// Blocks special characters to be inputted on the timers
-	function inputCharacterLimiter(e) {
-		const invalidChars = ["-", "+", "=", "e"];
-
-		// avoids user from inputting special characters such as E and +
-		if (invalidChars.includes(e.key)) {
-			e.preventDefault();
-		}
-
-		// This will limit the characters to two. It checks if the username is a number, if it is, then block it. Otherwise, if it's a backspace, proceed.
-		if (!isNaN(e.key) && e.target.value.length >= 2) {
-			e.preventDefault();
-		}
-	}
+	}, [isRunning, isPaused]);
 
 	return (
 		<>
 			<div className="timer-wrapper">
 				<div className="header">
 					<div className="timer-type">Countdown</div>
-					<div className="timer-label">{label}</div>
 				</div>
+				<div className="timer-label">{label}</div>
 				{isRunning ? (
 					// <div
 					// 	className="timer-display"

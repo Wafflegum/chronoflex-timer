@@ -69,8 +69,8 @@ function Stopwatch() {
 		<div className="timer-wrapper">
 			<div className="header">
 				<div className="timer-type">Stopwatch</div>
-				<div className="timer-label">Running</div>
 			</div>
+			<div className="timer-label">Running</div>
 			<div className="stopwatch-display">
 				{time.hours != 0
 					? `${time.hours.toString().padStart(2, 0)}:${time.minutes.toString().padStart(2, 0)}:${time.seconds
