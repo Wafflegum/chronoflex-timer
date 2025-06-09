@@ -1,0 +1,114 @@
+
+.customizable-timer-wrapper
+    scroll-snap-align: start
+
+    width: 100%
+    height: 100%
+
+    padding: 1.5rem
+    box-sizing: border-box
+
+    display: flex
+    flex-direction: column
+
+    justify-content: center
+    align-items: center
+
+    position: relative
+
+    gap: 2rem
+
+    .header
+        display: flex
+        flex-direction: column
+
+        justify-content: center
+        align-items: center
+        gap: 0.25rem
+
+        position: absolute
+
+        top: 5%
+
+    .timer-type
+        font-size: var(--title-size)
+            // color: light-dark(var(--text-secondary-color))
+
+        font-weight: 600
+
+    .timer-label
+        font-size: 1.25rem
+
+    .timer-display
+        display: flex
+        justify-content: center
+        align-items: center
+
+        font-size: 3rem
+
+        font-family: Noto Sans Mono, monospace
+        font-weight: 300
+        color: light-dark(var(--text-color))
+
+        .CircularProgressbar
+
+            &-path
+                stroke: light-dark(var(--accent-color))
+
+            &-trail
+                stroke: light-dark(var(--progress-trail-color))
+
+    .timer-field
+        font-family: Noto Sans Mono, monospace
+        font-weight: 300
+        color: light-dark(var(--text-color))
+
+        input
+            border: 2px solid #1b1b1b
+            outline: 0
+            font-weight: 300
+
+            // background: rgb(17, 17, 17)
+
+            border-radius: 1rem
+
+            text-align: center
+            font-family: inherit
+
+            transition: border 0.2s ease, border-radius 0.2s ease
+
+            &:focus-visible
+                border: 2px solid rgb(78, 78, 78)
+                border-radius: 1.25rem
+
+    .button-container
+        width: fit-content
+        height: fit-content
+
+        display: block
+
+        display: flex
+        justify-content: center
+        align-items: center
+        gap: 2rem
+
+        button
+            border: 0
+            border-radius: 0.5rem
+            outline: 0
+
+            font-family: inherit
+            font-size: 2.5rem
+
+            background: none
+
+    .timer-field-container
+        display: flex
+        flex-direction: column
+
+        align-items: center
+        justify-content: center
+        gap: 1rem
+
+        .timer-field-label
+            font-size: 1.5rem
