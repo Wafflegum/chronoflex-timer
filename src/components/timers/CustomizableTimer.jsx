@@ -5,10 +5,16 @@ import { faPlay, faPause, faStop } from "@fortawesome/free-solid-svg-icons";
 import { faStopwatch } from "@fortawesome/free-solid-svg-icons";
 import { buildStyles, CircularProgressbarWithChildren } from "react-circular-progressbar";
 
+import finishAudio from "/audio/ding-2.mp3";
+import roundAudio from "/audio/ding-3.wav";
+
+import startBeep from "/audio/start-beep.mp3";
+import deepBeep from "/audio/deep-beep.mp3";
+
 import "../../css/components/CustomizableTimer.css";
 
 function CustomizableTimer() {
-	const [state, setState] = useState("stopped"); // states are running, paused, or stopped
+	const [state, setState] = useState("stopped"); // states are running, paused, stopped or countdown
 	const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
 	const [timerDuration, setTimerDuration] = useState(0); // in seconds
 
@@ -22,6 +28,9 @@ function CustomizableTimer() {
 	const [restTime, setRestTime] = useState({ hours: 0, minutes: 0, seconds: 0 });
 
 	const [customizability, SetCustomizability] = useState(true);
+	const [preCountdown, setPreCountdown] = useState(true);
+	const [preCountdownDuration, setPreCountdownDuration] = useState(3); // starting countdown in seconds
+	const [preCountdownTimer, setPreCountdownTimer] = useState(0);
 
 	// work input refs
 	const workHoursRef = useRef();
@@ -80,11 +89,18 @@ function CustomizableTimer() {
 		);
 
 		setCurrentRound(1);
-		setTimeMode("work");
-		setState("running");
+		if (preCountdown) {
+			setPreCountdownTimer(preCountdownDuration);
+			setState("countdown");
+		} else {
+			setTimeMode("work");
+			setState("running");
+		}
 	}
 
 	function handleStopTime() {
+		setCurrentRound(1);
+
 		setState("stopped");
 	}
 
@@ -119,16 +135,17 @@ function CustomizableTimer() {
 			const totalSeconds = timeLeft.hours * 3600 + timeLeft.minutes * 60 + timeLeft.seconds;
 
 			if (totalSeconds <= 0) {
-				// const audio = new Audio(alarmAudio);
-				// audio.play();
-
 				if (currentRound >= rounds) {
 					clearInterval(timer);
 					setState("stopped");
 					console.log("Session ended");
 
-					return { hours: 0, minutes: 0, seconds: 0 };
+					const audio = new Audio(finishAudio);
+					audio.play();
 				} else {
+					const audio = new Audio(roundAudio);
+					audio.play();
+
 					if (timeMode === "work") {
 						setTimerDuration(formatSeconds(restTime));
 						setTimeMode("rest");
@@ -161,21 +178,57 @@ function CustomizableTimer() {
 
 		return () => clearInterval(timer);
 	}, [state, timeLeft, timeMode, currentRound, rounds, timerDuration]);
+
+	// Starting countdown functionality
+	useEffect(() => {
+		if (state !== "countdown") return;
+
+		const timer = setInterval(() => {
+			if (preCountdownTimer <= 0) {
+				clearInterval(timer);
+				setState("running");
+
+				console.log("Timer started");
+
+				const audio = new Audio(startBeep);
+				audio.play();
+			} else {
+				setPreCountdownTimer((prev) => {
+					const audio = new Audio(deepBeep);
+					audio.play();
+
+					return prev - 1;
+				});
+			}
+		}, 1000);
+
+		return () => clearInterval(timer);
+	}, [preCountdownDuration, state, preCountdownTimer]);
 	return (
 		<>
 			<div className="customizable-timer-wrapper">
 				<div className="header">
 					<div className="timer-type">Interval Timer</div>
-					{(customizability && state === "stopped") ||
-						(customizability && state === "settings" && (
-							<button className="btn-icon" onClick={handleClickSettings}>
-								<FontAwesomeIcon icon={faStopwatch} />
-							</button>
-						))}
-					<div className="timer-label">Test</div>
-					{currentRound}
-				</div>
+					<div className="timer-label">Label</div>
+					{customizability && (state === "settings" || state === "stopped") && (
+						<button className="btn-icon" onClick={handleClickSettings}>
+							<FontAwesomeIcon icon={faStopwatch} />
+						</button>
+					)}
 
+					<div className="currentRoundDisplay">
+						{state === "running" ? (
+							<>
+								{timeMode === "work" && `Round ${currentRound}`}
+
+								{timeMode === "rest" && "Rest"}
+							</>
+						) : (
+							""
+						)}
+					</div>
+				</div>
+				{state === "countdown" && <div className="startCountdown-display">{preCountdownTimer}</div>}
 				{(state === "running" || state === "paused") && (
 					<>
 						<div className="timer-display">
@@ -208,7 +261,6 @@ function CustomizableTimer() {
 						</div>
 					</>
 				)}
-
 				{state === "stopped" && (
 					<>
 						<div className="timer-field-container">
@@ -272,7 +324,6 @@ function CustomizableTimer() {
 						</div>
 					</>
 				)}
-
 				{state === "settings" ? "" : ""}
 			</div>
 		</>
