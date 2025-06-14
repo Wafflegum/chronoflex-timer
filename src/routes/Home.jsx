@@ -10,8 +10,8 @@ function Home() {
 			<div className="scrollsnap-page-container">
 				{/* <div className="title">ChronoFlex Timer</div> */}
 				<div className="timer-container">
-					{/* <NormalTimer />
-					<Stopwatch /> */}
+					<NormalTimer />
+					<Stopwatch />
 					<CustomizableTimer />
 				</div>
 			</div>

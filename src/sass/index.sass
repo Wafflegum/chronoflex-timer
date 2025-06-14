@@ -177,14 +177,34 @@ body
     font-family: inherit
     color: inherit
 
-    transition: background 0.15s ease, color 0.15s ease, scale 0.2s ease
+    transition: background 0.2s ease, color 0.15s ease, scale 0.2s ease
 
     border-radius: 50%
 
     &:active
-        scale: 0.5
+        scale: 1.1
         background: light-dark(var(--text-color))
         color: light-dark(var(--background-color))
+
+.number-input-field
+    border: 2px solid #1b1b1b
+    outline: 0
+    font-weight: 300
+
+    background: none
+
+    border-radius: 1rem
+
+    text-align: center
+    font-family: Noto Sans Mono, monospace
+    font-weight: 300
+    color: light-dark(var(--text-color))
+
+    transition: border 0.2s ease, border-radius 0.2s ease
+
+    &:focus-visible
+        border: 2px solid rgb(78, 78, 78)
+        border-radius: 1.25rem
 
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,

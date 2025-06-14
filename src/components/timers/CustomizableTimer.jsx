@@ -128,6 +128,7 @@ function CustomizableTimer() {
 		}
 	}
 
+	// Timer functionalities
 	useEffect(() => {
 		if (state !== "running") return;
 
@@ -324,7 +325,24 @@ function CustomizableTimer() {
 						</div>
 					</>
 				)}
-				{state === "settings" ? "" : ""}
+				{state === "settings" && (
+					<div className="settings-container">
+						<div className="setting-wrapper">
+							<label htmlFor="">Rounds</label>
+							<input
+								type="number"
+								placeholder="0"
+								value={rounds}
+								className="number-input-field"
+								id="roundSetting"
+								onChange={(e) => {
+									setRounds(e.target.value);
+								}}
+								onKeyDown={inputCharacterLimiter}
+							/>
+						</div>
+					</div>
+				)}
 			</div>
 		</>
 	);
