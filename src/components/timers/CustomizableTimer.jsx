@@ -105,7 +105,11 @@ function CustomizableTimer() {
 	}
 
 	function handlePauseTime() {
-		setState("paused");
+		if (state === "paused") {
+			setState("running");
+		} else if ("running") {
+			setState("paused");
+		}
 	}
 
 	function handleClickSettings() {
