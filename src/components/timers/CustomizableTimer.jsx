@@ -89,11 +89,12 @@ function CustomizableTimer() {
 		);
 
 		setCurrentRound(1);
+		setTimeMode("work");
+
 		if (preCountdown) {
 			setPreCountdownTimer(preCountdownDuration);
 			setState("countdown");
 		} else {
-			setTimeMode("work");
 			setState("running");
 		}
 	}
