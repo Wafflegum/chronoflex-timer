@@ -5,6 +5,7 @@ import Home from "./routes/Home";
 import History from "./routes/History";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStopwatch, faTimeline, faGear } from "@fortawesome/free-solid-svg-icons";
+import Settings from "./routes/Settings";
 
 function App() {
 	return (
@@ -12,6 +13,7 @@ function App() {
 			<Routes>
 				<Route path="/" element={<Home />} />
 				<Route path="/history" element={<History />} />
+				<Route path="/settings" element={<Settings />} />
 			</Routes>
 			<nav className="navbar-container">
 				<Link to="/" className="nav-wrapper">

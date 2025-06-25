@@ -13,4 +13,14 @@ function inputCharacterLimiter(e) {
 	}
 }
 
+function formatDateTime(date, formatTime = false) {
+	const optionsDate = { year: "numeric", month: "numeric", day: "numeric" };
+	const optionsTime = { hour: "numeric", minute: "numeric", hour12: false };
+
+	const formattedDate = new Date(date).toLocaleDateString(undefined, optionsDate);
+	const formattedTime = new Date(date).toLocaleTimeString(undefined, optionsTime);
+
+	return formatTime ? `${formattedDate} - ${formattedTime}` : `${formattedDate}`;
+}
+
 export { inputCharacterLimiter };

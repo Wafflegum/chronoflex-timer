@@ -8,6 +8,7 @@ import "react-circular-progressbar/dist/styles.css";
 
 import alarmAudio from "/audio/ding-2.mp3";
 import { inputCharacterLimiter } from "../../utilities";
+import TimerMisc from "../TimerMisc";
 
 function NormalTimer({ id }) {
 	const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
@@ -25,6 +26,7 @@ function NormalTimer({ id }) {
 
 	const [timerDuration, setTimerDuration] = useState();
 	const [label, setLabel] = useState("JUMP ROPE");
+	const [notes, setNotes] = useState("Notes...");
 
 	const calculateTimeLeft = () => {
 		const totalSeconds = hoursRef.current.value * 3600 + minutesRef.current.value * 60 + secondsRef.current.value;
@@ -36,6 +38,22 @@ function NormalTimer({ id }) {
 			seconds: totalSeconds % 60,
 		};
 	};
+
+	function saveToHistory(isCompleted) {
+		const timerSession = {
+			id: id,
+			date: new Date(),
+			timerLabel: label,
+			type: "countdown",
+			timerDuration: timerDuration,
+			completed: isCompleted,
+		};
+
+		const history = JSON.parse(localStorage.getItem("history")) || [];
+
+		history.push(timerSession);
+		localStorage.setItem("history", JSON.stringify(history));
+	}
 
 	function handleStartTime() {
 		const formatTime = calculateTimeLeft();
@@ -49,7 +67,8 @@ function NormalTimer({ id }) {
 
 		const timerSession = {
 			id: id,
-			timerLabel: "",
+			date: new Date(),
+			timerLabel: label,
 			type: "normal",
 			isRunning: true,
 			isPaused: isPaused,
@@ -74,6 +93,8 @@ function NormalTimer({ id }) {
 	function handleStopTime() {
 		setIsPaused(false);
 		setIsRunning(false);
+
+		saveToHistory(false);
 
 		localStorage.removeItem("timerSession");
 	}
@@ -111,6 +132,8 @@ function NormalTimer({ id }) {
 		const timer = setInterval(() => {
 			setTimeLeft((prevTime) => {
 				const totalSeconds = prevTime.hours * 3600 + prevTime.minutes * 60 + prevTime.seconds;
+
+				// when timer finishes
 				if (totalSeconds <= 0) {
 					clearInterval(timer);
 
@@ -119,6 +142,8 @@ function NormalTimer({ id }) {
 
 					setIsRunning(false);
 					localStorage.removeItem("timerSession");
+
+					saveToHistory(true);
 
 					return { hours: 0, minutes: 0, seconds: 0 };
 				}
@@ -153,7 +178,9 @@ function NormalTimer({ id }) {
 				<div className="header">
 					<div className="timer-type">Countdown</div>
 				</div>
-				<div className="timer-label">{label}</div>
+
+				<TimerMisc label={label} setLabel={setLabel} notes={notes} setNotes={setNotes} />
+
 				{isRunning ? (
 					// <div
 					// 	className="timer-display"

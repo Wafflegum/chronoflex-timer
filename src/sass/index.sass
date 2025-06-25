@@ -5,6 +5,8 @@
     --text-color: #161616, #cfcfcf
     --text-secondary-color: #252525, #797979
 
+    --border-color: #d8d8d8, #1b1b1b
+
     --accent-color: rgb(185, 166, 111), rgb(255, 226, 171)
     --progress-trail-color: #c0c0c0, #303030
 
@@ -37,7 +39,7 @@ body
 
 .scrollsnap-page-container
     width: 100%
-    height: calc(100% - var(--navbar-height) + 1rem)
+    height: calc(100% - (var(--navbar-height) + 0.5rem))
 
     box-sizing: border-box
 
@@ -50,6 +52,14 @@ body
     .title
         font-size: var(--title-size)
         font-weight: 600
+
+.page-container
+    padding: 2rem
+    height: calc(100% - (var(--navbar-height) + 0.5rem))
+
+.page-title
+    font-size: var(--title-size)
+    font-weight: 600
 
 .timer-container
     width: 100%
@@ -98,8 +108,48 @@ body
 
                 font-weight: 600
 
-        .timer-label
-            font-size: 1.25rem
+        .timer-misc
+            display: flex
+            flex-direction: column
+            justify-content: center
+            align-items: center
+            gap: 0.25rem
+
+            .timer-label
+                font-size: 1.25rem
+
+            .timer-notes
+                display: flex
+                justify-content: space-between
+
+                gap: 1rem
+                color: gray
+
+            .input-field-container
+                display: flex
+                align-items: center
+
+                background-color: light-dark(var(--background-color))
+                padding: 0.25rem 0.5rem
+
+                border: 1px solid light-dark(#cfcfcf, #363636)
+                border-radius: 0.5rem
+
+                .label-field
+                    background: none
+
+                    outline: 0
+                    border: 0
+                    padding: none
+
+                    font-size: 1rem
+                    font-family: inherit
+                    font-weight: inherit
+
+                    transition: border 0.2s ease
+
+                .btn-icon
+                    font-size: 1.25rem
 
         .timer-display
             display: flex
@@ -126,7 +176,7 @@ body
             color: light-dark(var(--text-color))
 
             input
-                border: 2px solid #1b1b1b
+                border: 2px solid light-dark(var(--border-color))
                 outline: 0
                 font-weight: 300
 
@@ -169,7 +219,7 @@ body
     border: 0
     outline-color: transparent
 
-    padding: 0.25rem
+    padding: 0 0.25rem
 
     aspect-ratio: 1 / 1
 
@@ -177,14 +227,14 @@ body
     font-family: inherit
     color: inherit
 
-    transition: background 0.2s ease, color 0.15s ease, scale 0.2s ease
+    transition: background 0.2s ease, color 0.15s ease, scale 0.1s ease
 
     border-radius: 50%
 
     &:active
-        scale: 1.1
-        background: light-dark(var(--text-color))
-        color: light-dark(var(--background-color))
+        scale: 0.9
+        // background: light-dark(var(--text-color))
+        // color: light-dark(var(--background-color))
 
 .number-input-field
     border: 2px solid #1b1b1b

@@ -12,7 +12,7 @@ function Home() {
 				<div className="timer-container">
 					<NormalTimer />
 					<Stopwatch />
-					<CustomizableTimer />
+					<CustomizableTimer id={"interval-1"} />
 				</div>
 			</div>
 		</>

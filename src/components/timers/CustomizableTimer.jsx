@@ -13,7 +13,10 @@ import deepBeep from "/audio/deep-beep.mp3";
 
 import "../../css/components/CustomizableTimer.css";
 
-function CustomizableTimer() {
+function CustomizableTimer({ id }) {
+	const [label, setLabel] = useState("");
+	const [notes, setNotes] = useState("");
+
 	const [state, setState] = useState("stopped"); // states are running, paused, stopped or countdown
 	const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
 	const [timerDuration, setTimerDuration] = useState(0); // in seconds
@@ -57,6 +60,27 @@ function CustomizableTimer() {
 		return time.hours * 3600 + time.minutes * 60 + time.seconds;
 	}
 
+	function saveToHistory(isCompleted) {
+		const timerSession = {
+			id: id,
+			date: new Date(),
+			label: label,
+			notes: notes,
+			type: "interval",
+			rounds: rounds,
+			workTime: workTime,
+			restTime: restTime,
+			preCountdown: preCountdown,
+			preCountdownDuration: preCountdownDuration,
+			completed: isCompleted,
+		};
+
+		const history = JSON.parse(localStorage.getItem("history")) || [];
+
+		history.push(timerSession);
+		localStorage.setItem("history", JSON.stringify(history));
+	}
+
 	function handleStartTime() {
 		setWorkTime(
 			formatTime({
@@ -91,8 +115,17 @@ function CustomizableTimer() {
 		setCurrentRound(1);
 		setTimeMode("work");
 
+		// save last session
+		const session = {
+			id: id,
+			workTime: workTime,
+			restTime: restTime,
+		};
+
+		localStorage.setItem(id, JSON.stringify(session));
+
 		if (preCountdown) {
-			setPreCountdownTimer(preCountdownDuration);
+			setPreCountdownTimer(preCountdownDuration + 1);
 			setState("countdown");
 		} else {
 			setState("running");
@@ -102,6 +135,7 @@ function CustomizableTimer() {
 	function handleStopTime() {
 		setCurrentRound(1);
 
+		saveToHistory(false);
 		setState("stopped");
 	}
 
@@ -133,6 +167,15 @@ function CustomizableTimer() {
 		}
 	}
 
+	useEffect(() => {
+		const savedSession = JSON.parse(localStorage.getItem(id)) || null;
+
+		if (savedSession) {
+			setWorkTime(savedSession.workTime);
+			setRestTime(savedSession.restTime);
+		}
+	}, []);
+
 	// Timer functionalities
 	useEffect(() => {
 		if (state !== "running") return;
@@ -148,6 +191,10 @@ function CustomizableTimer() {
 
 					const audio = new Audio(finishAudio);
 					audio.play();
+
+					const timerSession = {};
+
+					saveToHistory(true);
 				} else {
 					const audio = new Audio(roundAudio);
 					audio.play();
@@ -170,6 +217,11 @@ function CustomizableTimer() {
 			} else {
 				const newTotalSeconds = totalSeconds - 1;
 
+				if (newTotalSeconds < 3) {
+					const audio = new Audio(deepBeep);
+					audio.play();
+				}
+
 				setSecondsRemaining((newTotalSeconds / timerDuration) * 100);
 
 				const time = {
@@ -190,7 +242,17 @@ function CustomizableTimer() {
 		if (state !== "countdown") return;
 
 		const timer = setInterval(() => {
-			if (preCountdownTimer <= 0) {
+			if (preCountdownTimer > 1) {
+				const audio = new Audio(deepBeep);
+
+				if (!audio.onplaying) audio.play();
+
+				setPreCountdownTimer((prev) => {
+					const countdown = prev - 1;
+
+					return countdown;
+				});
+			} else {
 				clearInterval(timer);
 				setState("running");
 
@@ -198,13 +260,6 @@ function CustomizableTimer() {
 
 				const audio = new Audio(startBeep);
 				audio.play();
-			} else {
-				setPreCountdownTimer((prev) => {
-					const audio = new Audio(deepBeep);
-					audio.play();
-
-					return prev - 1;
-				});
 			}
 		}, 1000);
 
@@ -234,7 +289,11 @@ function CustomizableTimer() {
 						)}
 					</div>
 				</div>
-				{state === "countdown" && <div className="startCountdown-display">{preCountdownTimer}</div>}
+				{state === "countdown" && (
+					<div className="startCountdown-display">
+						{preCountdownTimer > preCountdownDuration ? "Timer start in..." : preCountdownTimer}
+					</div>
+				)}
 				{(state === "running" || state === "paused") && (
 					<>
 						<div className="timer-display">
@@ -344,6 +403,19 @@ function CustomizableTimer() {
 									setRounds(e.target.value);
 								}}
 								onKeyDown={inputCharacterLimiter}
+							/>
+						</div>
+
+						<div className="setting-wrapper">
+							<label htmlFor="preCountdownToggle">Pre-Countdown</label>
+							<input
+								type="checkbox"
+								name="Pre-Countdown Toggle"
+								id="preCountdownToggle"
+								checked={preCountdown}
+								onChange={(e) => {
+									setPreCountdown(e.target.checked);
+								}}
 							/>
 						</div>
 					</div>
