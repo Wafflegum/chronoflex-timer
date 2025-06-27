@@ -45,7 +45,11 @@ function NormalTimer({ id }) {
 			date: new Date(),
 			timerLabel: label,
 			type: "countdown",
-			timerDuration: timerDuration,
+			timerDuration: {
+				hours: Math.floor(timerDuration / 3600),
+				minutes: Math.floor((timerDuration % 3600) / 60),
+				seconds: timerDuration % 60,
+			},
 			completed: isCompleted,
 		};
 
@@ -69,7 +73,7 @@ function NormalTimer({ id }) {
 			id: id,
 			date: new Date(),
 			timerLabel: label,
-			type: "normal",
+			type: "countdown",
 			isRunning: true,
 			isPaused: isPaused,
 			timeLeft: calculateTimeLeft(),
@@ -94,7 +98,7 @@ function NormalTimer({ id }) {
 		setIsPaused(false);
 		setIsRunning(false);
 
-		saveToHistory(false);
+		// saveToHistory(false);
 
 		localStorage.removeItem("timerSession");
 	}
@@ -130,47 +134,45 @@ function NormalTimer({ id }) {
 		if (!isRunning || isPaused) return;
 
 		const timer = setInterval(() => {
-			setTimeLeft((prevTime) => {
-				const totalSeconds = prevTime.hours * 3600 + prevTime.minutes * 60 + prevTime.seconds;
+			const totalSeconds = timeLeft.hours * 3600 + timeLeft.minutes * 60 + timeLeft.seconds;
 
-				// when timer finishes
-				if (totalSeconds <= 0) {
-					clearInterval(timer);
+			// when timer finishes
+			if (totalSeconds <= 0) {
+				clearInterval(timer);
 
-					const audio = new Audio(alarmAudio);
-					audio.play();
+				const audio = new Audio(alarmAudio);
+				audio.play();
 
-					setIsRunning(false);
-					localStorage.removeItem("timerSession");
+				setIsRunning(false);
+				localStorage.removeItem("timerSession");
 
-					saveToHistory(true);
+				saveToHistory(true);
 
-					return { hours: 0, minutes: 0, seconds: 0 };
-				}
+				setTimeLeft({ hours: 0, minutes: 0, seconds: 0 });
+			}
 
-				const newTotalSeconds = totalSeconds - 1;
+			const newTotalSeconds = totalSeconds - 1;
 
-				// setTimerProgress((newTotalSeconds / timerDuration) * 100);
-				// timerDisplayRef.current.style.setProperty("--progress", `${(newTotalSeconds / timerDuration) * 100}%`);
+			// setTimerProgress((newTotalSeconds / timerDuration) * 100);
+			// timerDisplayRef.current.style.setProperty("--progress", `${(newTotalSeconds / timerDuration) * 100}%`);
 
-				setSecondsRemaining((newTotalSeconds / timerDuration) * 100);
+			setSecondsRemaining((newTotalSeconds / timerDuration) * 100);
 
-				const time = {
-					hours: Math.floor(newTotalSeconds / 3600),
-					minutes: Math.floor((newTotalSeconds % 3600) / 60),
-					seconds: newTotalSeconds % 60,
-				};
+			const time = {
+				hours: Math.floor(newTotalSeconds / 3600),
+				minutes: Math.floor((newTotalSeconds % 3600) / 60),
+				seconds: newTotalSeconds % 60,
+			};
 
-				const storedTimerSession = JSON.parse(localStorage.getItem("timerSession"));
+			const storedTimerSession = JSON.parse(localStorage.getItem("timerSession"));
 
-				localStorage.setItem("timerSession", JSON.stringify({ ...storedTimerSession, timeLeft: time }));
+			localStorage.setItem("timerSession", JSON.stringify({ ...storedTimerSession, timeLeft: time }));
 
-				return time;
-			});
+			setTimeLeft(time);
 		}, 1000);
 
 		return () => clearInterval(timer);
-	}, [isRunning, isPaused]);
+	}, [isRunning, isPaused, timeLeft]);
 
 	return (
 		<>
@@ -225,16 +227,16 @@ function NormalTimer({ id }) {
 				{isRunning ? (
 					<div className="button-container">
 						{!isPaused ? (
-							<button onClick={handlePauseTime}>
+							<button onClick={() => handlePauseTime()}>
 								<FontAwesomeIcon icon={faPause} />
 							</button>
 						) : (
-							<button onClick={handlePauseTime}>
+							<button onClick={() => handlePauseTime()}>
 								<FontAwesomeIcon icon={faPlay} />
 							</button>
 						)}
 
-						<button onClick={handleStopTime}>
+						<button onClick={() => handleStopTime()}>
 							<FontAwesomeIcon icon={faStop} />
 						</button>
 					</div>

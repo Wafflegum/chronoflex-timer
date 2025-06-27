@@ -5,7 +5,7 @@
     --text-color: #161616, #cfcfcf
     --text-secondary-color: #252525, #797979
 
-    --border-color: #d8d8d8, #1b1b1b
+    --border-color: #d8d8d8, #2e2e2e
 
     --accent-color: rgb(185, 166, 111), rgb(255, 226, 171)
     --progress-trail-color: #c0c0c0, #303030
@@ -17,7 +17,7 @@
 
 @font-face
     font-family: Montserrat
-    src: url("/Montserrat-Regular.ttf") format("truetype")
+    src: url("/Montserrat-VariableFont_wght.ttf") format("truetype")
 
 @font-face
     font-family: 'Noto Sans Mono'
@@ -55,11 +55,17 @@ body
 
 .page-container
     padding: 2rem
-    height: calc(100% - (var(--navbar-height) + 0.5rem))
+    box-sizing: border-box
+
+    // height: calc(100% - (var(--navbar-height) + 0.5rem))
+    height: 100%
 
 .page-title
+    text-align: center
     font-size: var(--title-size)
     font-weight: 600
+
+    margin-bottom: 1.5rem
 
 .timer-container
     width: 100%

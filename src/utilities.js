@@ -23,4 +23,20 @@ function formatDateTime(date, formatTime = false) {
 	return formatTime ? `${formattedDate} - ${formattedTime}` : `${formattedDate}`;
 }
 
-export { inputCharacterLimiter };
+function convertToTitleCase(text) {
+	const titleCased = text[0].toUpperCase() + text.slice(1, text.length);
+
+	return titleCased;
+}
+
+function formatTimeObject(timeObj) {
+	const formattedTime =
+		(timeObj.hours > 0 ? timeObj.hours + "h " : "") +
+		(timeObj.minutes > 0 ? timeObj.minutes + "m " : "") +
+		timeObj.seconds +
+		"s";
+
+	return formattedTime;
+}
+
+export { inputCharacterLimiter, formatDateTime, convertToTitleCase, formatTimeObject };
