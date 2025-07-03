@@ -4,7 +4,7 @@
         #appInfo
             font-size: 0.85rem
             text-align: center
-            color: light-dark(var(--text-secondary-color))
+            color: var(--text-secondary-color)
 
     .settings-container
         display: flex
@@ -22,7 +22,7 @@
 
             box-sizing: border-box
 
-            border: 1px solid light-dark(var(--border-color))
+            border: 1px solid var(--border-color)
             border-radius: 1rem
 
             .setting-title
@@ -34,13 +34,14 @@
                 display: grid
 
                 grid-template-rows: 1
-                grid-template-columns: repeat(3, 1fr)
+                grid-template-columns: repeat(2, 1fr)
                 gap: 1rem
 
                 justify-content: space-around
                 align-items: center
 
                 .appearance-option
+
                     display: flex
                     flex-direction: column
                     justify-content: center
@@ -48,7 +49,7 @@
 
                     padding: 1rem
 
-                    border: 1px solid light-dark(var(--border-color))
+                    border: 1px solid var(--border-color)
                     border-radius: 0.5rem
 
                     .icon
