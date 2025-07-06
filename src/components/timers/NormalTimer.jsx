@@ -8,7 +8,12 @@ import "react-circular-progressbar/dist/styles.css";
 
 import alarmAudio from "/audio/ding-2.mp3";
 import { inputCharacterLimiter } from "../../utilities";
+
+import { isPermissionGranted, requestPermission, sendNotification } from "@tauri-apps/plugin-notification";
 import TimerMisc from "../TimerMisc";
+import useAppVisiblity from "../../hooks/useAppVisiblity";
+
+let permissionGranted = await isPermissionGranted();
 
 function NormalTimer({ id }) {
 	const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
@@ -27,6 +32,9 @@ function NormalTimer({ id }) {
 	const [timerDuration, setTimerDuration] = useState();
 	const [label, setLabel] = useState("JUMP ROPE");
 	const [notes, setNotes] = useState("Notes...");
+
+	// This will check if the user is in the app or not
+	const isAppVisible = useAppVisiblity();
 
 	const calculateTimeLeft = () => {
 		const totalSeconds = hoursRef.current.value * 3600 + minutesRef.current.value * 60 + secondsRef.current.value;
@@ -103,8 +111,25 @@ function NormalTimer({ id }) {
 		localStorage.removeItem("timerSession");
 	}
 
+	function notifyWhenInBackground() {
+		if (!isAppVisible) {
+			sendNotification({ title: "App is in background", body: "Your countdown has finished" });
+		} else {
+			sendNotification({ title: "App is visible", body: "Your countdown has finished" });
+		}
+	}
+
 	// Startup boot, load timer if it exists
 	useEffect(() => {
+		async function checkPermissions() {
+			if (!permissionGranted) {
+				const permission = await requestPermission();
+				permissionGranted = permission === "granted";
+			}
+		}
+
+		checkPermissions();
+
 		const storedTimerSession = JSON.parse(localStorage.getItem("timerSession"));
 
 		if (storedTimerSession) {
@@ -143,8 +168,18 @@ function NormalTimer({ id }) {
 				const audio = new Audio(alarmAudio);
 				audio.play();
 
+				notifyWhenInBackground();
+
+				if (navigator.vibrate) {
+					navigator.vibrate(300);
+				}
+
 				setIsRunning(false);
 				localStorage.removeItem("timerSession");
+
+				if (navigator.vibrate) {
+					navigator.vibrate(200);
+				}
 
 				saveToHistory(true);
 

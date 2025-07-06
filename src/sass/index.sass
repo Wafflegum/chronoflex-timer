@@ -23,7 +23,7 @@
     font-family: 'Noto Sans Mono'
     src: url('/NotoSansMono-VariableFont_wdth,wght.ttf') format('truetype')
 
-[theme="dark"]
+[theme="dark-default"]
     --background-color: #141414
     --text-color: #cfcfcf
     --text-secondary-color: #797979
@@ -33,7 +33,7 @@
     --accent-color: rgb(255, 226, 171)
     --progress-trail-color: #303030
 
-[theme="light"]
+[theme="light-default"]
     --background-color: #ffffff
     --text-color: #161616
     --text-secondary-color: #252525
@@ -42,6 +42,26 @@
 
     --accent-color: rgb(185, 166, 111)
     --progress-trail-color: #c0c0c0
+
+[theme="dark-purple"]
+    --background-color: #1c1127
+    --text-color: #ddc3e4
+    --text-secondary-color: ##917f96
+
+    --border-color: #43314e
+
+    --accent-color: rgb(255, 226, 171)
+    --progress-trail-color: #ffdaff
+
+[theme="light-purple"]
+    --background-color: #dacfe6
+    --text-color: #3d2842
+    --text-secondary-color: ##674b70
+
+    --border-color: #b9a2c7
+
+    --accent-color: rgb(255, 226, 171)
+    --progress-trail-color: #70477c
 
 html
     color-scheme: dark light
@@ -244,6 +264,18 @@ body
                 font-size: 2.5rem
 
                 background: none
+
+.modal-background
+    position: fixed
+    left: 0
+    top: 0
+    width: 100%
+    height: 100%
+
+    background: rgba(0, 0, 0, 0.404)
+    backdrop-filter: blur(2px)
+
+    z-index: 1
 
 .btn-icon
     background: none

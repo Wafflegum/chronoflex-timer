@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "chronoflex-timer",
+        "title": "ChronoFlex Timer",
         "width": 800,
         "height": 600
       }

@@ -4,18 +4,32 @@ import { faSun } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 
+import { motion, spring } from "framer-motion";
+
 import { getVersion } from "@tauri-apps/api/app";
 
 import "../css/Settings.css";
+import { AnimatePresence } from "framer-motion";
 
 function Settings() {
 	const [version, setVersion] = useState("");
+	const [theme, setTheme] = useState("dark");
+	const [colorTheme, setColorTheme] = useState("default");
+	const [isSelectingColor, setIsSelectingColor] = useState(false);
 
 	function handleDarkMode() {
-		document.querySelector("body").setAttribute("theme", "dark");
+		setTheme("dark");
+		document.querySelector("body").setAttribute("theme", `dark-${colorTheme}`);
 	}
 	function handleLightMode() {
-		document.querySelector("body").setAttribute("theme", "light");
+		setTheme("light");
+
+		document.querySelector("body").setAttribute("theme", `light-${colorTheme}`);
+	}
+
+	function handleChangeColorTheme(attr) {
+		setColorTheme(attr);
+		document.querySelector("body").setAttribute("theme", `${theme}-${attr}`);
 	}
 
 	useEffect(() => {
@@ -74,8 +88,42 @@ function Settings() {
 
 					<div className="settings-option">
 						<span>Theme</span>
-						<button id="colorBtn"></button>
+						<button id="colorBtn" onClick={() => setIsSelectingColor((prev) => !prev)}></button>
 					</div>
+
+					<AnimatePresence>
+						{isSelectingColor && (
+							<>
+								<motion.div
+									className="modal-background"
+									initial={{ opacity: 0 }}
+									animate={{ opacity: 1 }}
+									exit={{ opacity: 0 }}
+									onClick={() => setIsSelectingColor(false)}
+								/>
+								<motion.div
+									className="color-selection-modal"
+									initial={{ transform: "translateY(100%)" }}
+									animate={{ transform: "translateY(0rem)" }}
+									exit={{ transform: "translateY(100%)" }}
+								>
+									<div className="page-title">Color Themes</div>
+									<div className="colors-container">
+										<button
+											className="btn-color-option"
+											style={{ background: "#777777" }}
+											onClick={() => handleChangeColorTheme("default")}
+										></button>
+										<button
+											className="btn-color-option"
+											style={{ background: "#692672" }}
+											onClick={() => handleChangeColorTheme("purple")}
+										></button>
+									</div>
+								</motion.div>
+							</>
+						)}
+					</AnimatePresence>
 				</div>
 
 				<div className="settings-container__item">
@@ -90,6 +138,7 @@ function Settings() {
 					</div>
 				</div>
 			</div>
+
 			<footer id="aboutFooter">
 				<div className="divider"></div>
 

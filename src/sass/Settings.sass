@@ -68,3 +68,38 @@
 
                     border: 0
                     outline-color: transparent
+
+            .color-selection-modal
+                width: 100%
+
+                padding: 1rem
+                box-sizing: border-box
+
+                border-top: 2px solid var(--border-color)
+                border-radius: 1rem 1rem 0 0
+
+                position: absolute
+                bottom: 0
+                left: 0
+
+                background: var(--background-color)
+
+                z-index: 2
+
+                .colors-container
+                    display: flex
+                    justify-content: center
+                    align-items: center
+
+                    gap: 0.5rem
+
+                    z-index: 1
+
+                    .btn-color-option
+                        background: attr(data-color)
+                        height: 2.5rem
+                        outline: 0
+
+                        border: 0
+                        border-radius: 2rem
+                        aspect-ratio: 1 / 1
