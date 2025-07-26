@@ -1,4 +1,3 @@
-import React from "react";
 import { Route, Routes, Link } from "react-router-dom";
 import "./css/App.css";
 import Home from "./routes/Home";
@@ -6,8 +5,10 @@ import History from "./routes/History";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStopwatch, faTimeline, faGear } from "@fortawesome/free-solid-svg-icons";
 import Settings from "./routes/Settings";
+import { useState } from "react";
 
 function App() {
+	const [activePage, setActivePage] = useState("home"); // pages are home, history, and settings
 	return (
 		<>
 			<Routes>
@@ -16,17 +17,36 @@ function App() {
 				<Route path="/settings" element={<Settings />} />
 			</Routes>
 			<nav className="navbar-container">
-				<Link to="/" className="nav-wrapper">
+				<Link
+					to="/"
+					className={`nav-wrapper ${activePage == "home" ? "active-page" : ""}`}
+					onClick={() => {
+						setActivePage("home");
+					}}
+				>
 					<div className="icon">
 						<FontAwesomeIcon icon={faStopwatch} />
 					</div>
 				</Link>
-				<Link to="/history" className="nav-wrapper">
+				<Link
+					to="/history"
+					className={`nav-wrapper ${activePage == "history" ? "active-page" : ""}`}
+					onClick={() => {
+						setActivePage("history");
+					}}
+				>
 					<div className="icon">
 						<FontAwesomeIcon icon={faTimeline} />
 					</div>
 				</Link>
-				<Link to="/settings" className="nav-wrapper" id="settings">
+				<Link
+					to="/settings"
+					className={`nav-wrapper ${activePage == "settings" ? "active-page" : ""}`}
+					id="settings"
+					onClick={() => {
+						setActivePage("settings");
+					}}
+				>
 					<div className="icon">
 						<FontAwesomeIcon icon={faGear} />
 					</div>

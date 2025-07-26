@@ -13,8 +13,6 @@ import { isPermissionGranted, requestPermission, sendNotification } from "@tauri
 import TimerMisc from "../TimerMisc";
 import useAppVisiblity from "../../hooks/useAppVisiblity";
 
-let permissionGranted = await isPermissionGranted();
-
 function NormalTimer({ id }) {
 	const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
 	const [secondsRemaining, setSecondsRemaining] = useState(0);
@@ -122,6 +120,9 @@ function NormalTimer({ id }) {
 	// Startup boot, load timer if it exists
 	useEffect(() => {
 		async function checkPermissions() {
+			if (!("__TAURI__" in window)) return;
+			let permissionGranted = await isPermissionGranted();
+
 			if (!permissionGranted) {
 				const permission = await requestPermission();
 				permissionGranted = permission === "granted";

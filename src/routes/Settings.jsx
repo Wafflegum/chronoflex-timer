@@ -13,23 +13,37 @@ import { AnimatePresence } from "framer-motion";
 
 function Settings() {
 	const [version, setVersion] = useState("");
-	const [theme, setTheme] = useState("dark");
-	const [colorTheme, setColorTheme] = useState("default");
 	const [isSelectingColor, setIsSelectingColor] = useState(false);
 
-	function handleDarkMode() {
-		setTheme("dark");
-		document.querySelector("body").setAttribute("theme", `dark-${colorTheme}`);
-	}
-	function handleLightMode() {
-		setTheme("light");
+	const [settings, setSettings] = useState({
+		theme: "dark",
+		colorTheme: "default",
+		notificationEnabled: true,
+		soundEffectsEnabled: true,
+	});
 
-		document.querySelector("body").setAttribute("theme", `light-${colorTheme}`);
+	function handleChangeTheme(value) {
+		setSettings({ ...settings, theme: value });
+		document.querySelector("body").setAttribute("theme", `${value}-${settings.colorTheme}`);
 	}
 
 	function handleChangeColorTheme(attr) {
-		setColorTheme(attr);
-		document.querySelector("body").setAttribute("theme", `${theme}-${attr}`);
+		setSettings({ ...settings, colorTheme: attr });
+		document.querySelector("body").setAttribute("theme", `${settings.theme}-${attr}`);
+	}
+
+	function loadSettings() {
+		const storedSettings = JSON.parse(localStorage.getItem("settings"));
+
+		if (!storedSettings) {
+			localStorage.setItem("settings", JSON.stringify(settings));
+		} else {
+			setSettings(storedSettings);
+
+			document
+				.querySelector("body")
+				.setAttribute("theme", `${storedSettings.theme}-${storedSettings.colorTheme}`);
+		}
 	}
 
 	useEffect(() => {
@@ -44,7 +58,12 @@ function Settings() {
 		}
 
 		fetchAppInfo();
+		loadSettings();
 	}, []);
+
+	useEffect(() => {
+		localStorage.setItem("settings", JSON.stringify(settings));
+	}, [settings]);
 
 	return (
 		<div className="page-container" id="settingsPage">
@@ -66,13 +85,13 @@ function Settings() {
 				<div className="settings-container__item">
 					<div className="setting-title">Appearance</div>
 					<div className="appearance-options-container">
-						<div className="appearance-option" onClick={() => handleLightMode()}>
+						<div className="appearance-option" onClick={() => handleChangeTheme("light")}>
 							<span className="icon">
 								<FontAwesomeIcon icon={faSun} />
 							</span>
 							<span>Light</span>
 						</div>
-						<div className="appearance-option" onClick={() => handleDarkMode()}>
+						<div className="appearance-option" onClick={() => handleChangeTheme("dark")}>
 							<span className="icon">
 								<FontAwesomeIcon icon={faMoon} />
 							</span>
