@@ -10,16 +10,21 @@ import { getVersion } from "@tauri-apps/api/app";
 
 import "../css/Settings.css";
 import { AnimatePresence } from "framer-motion";
+import { a } from "framer-motion/client";
 
 function Settings() {
 	const [version, setVersion] = useState("");
 	const [isSelectingColor, setIsSelectingColor] = useState(false);
 
-	const [settings, setSettings] = useState({
-		theme: "dark",
-		colorTheme: "default",
-		notificationEnabled: true,
-		soundEffectsEnabled: true,
+	const [settings, setSettings] = useState(() => {
+		return localStorage.getItem("settings")
+			? JSON.parse(localStorage.getItem("settings"))
+			: {
+					theme: "dark",
+					colorTheme: "default",
+					notificationEnabled: true,
+					soundEffectsEnabled: true,
+			  };
 	});
 
 	function handleChangeTheme(value) {
@@ -30,20 +35,6 @@ function Settings() {
 	function handleChangeColorTheme(attr) {
 		setSettings({ ...settings, colorTheme: attr });
 		document.querySelector("body").setAttribute("theme", `${settings.theme}-${attr}`);
-	}
-
-	function loadSettings() {
-		const storedSettings = JSON.parse(localStorage.getItem("settings"));
-
-		if (!storedSettings) {
-			localStorage.setItem("settings", JSON.stringify(settings));
-		} else {
-			setSettings(storedSettings);
-
-			document
-				.querySelector("body")
-				.setAttribute("theme", `${storedSettings.theme}-${storedSettings.colorTheme}`);
-		}
 	}
 
 	useEffect(() => {
@@ -58,6 +49,13 @@ function Settings() {
 		}
 
 		fetchAppInfo();
+
+		// Load Settings
+
+		function loadSettings() {
+			document.querySelector("body").setAttribute("theme", `${settings.theme}-${settings.colorTheme}`); // loads the colors
+		}
+
 		loadSettings();
 	}, []);
 
@@ -85,13 +83,19 @@ function Settings() {
 				<div className="settings-container__item">
 					<div className="setting-title">Appearance</div>
 					<div className="appearance-options-container">
-						<div className="appearance-option" onClick={() => handleChangeTheme("light")}>
+						<div
+							className={`appearance-option ${settings.theme === "light" ? "active" : ""}`}
+							onClick={() => handleChangeTheme("light")}
+						>
 							<span className="icon">
 								<FontAwesomeIcon icon={faSun} />
 							</span>
 							<span>Light</span>
 						</div>
-						<div className="appearance-option" onClick={() => handleChangeTheme("dark")}>
+						<div
+							className={`appearance-option ${settings.theme === "dark" ? "active" : ""}`}
+							onClick={() => handleChangeTheme("dark")}
+						>
 							<span className="icon">
 								<FontAwesomeIcon icon={faMoon} />
 							</span>

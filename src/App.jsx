@@ -5,10 +5,31 @@ import History from "./routes/History";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStopwatch, faTimeline, faGear } from "@fortawesome/free-solid-svg-icons";
 import Settings from "./routes/Settings";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
 	const [activePage, setActivePage] = useState("home"); // pages are home, history, and settings
+
+	useEffect(() => {
+		function loadSettings() {
+			const storedSettings = localStorage.getItem("settings")
+				? JSON.parse(localStorage.getItem("settings"))
+				: {
+						theme: "dark",
+						colorTheme: "default",
+						notificationEnabled: true,
+						soundEffectsEnabled: true,
+				  };
+
+			localStorage.setItem("settings", JSON.stringify(storedSettings));
+			document
+				.querySelector("body")
+				.setAttribute("theme", `${storedSettings.theme}-${storedSettings.colorTheme}`); // loads the colors
+		}
+
+		loadSettings();
+	}, []);
+
 	return (
 		<>
 			<Routes>

@@ -2,7 +2,7 @@
     color-scheme: light dark
 
     --background-color: #141414
-    --text-color: #cfcfcf
+    --text-color: #ffffff
     --text-secondary-color: #797979
 
     --border-color: #2e2e2e
@@ -28,7 +28,7 @@
 
 [theme="dark-default"]
     --background-color: #141414
-    --text-color: #cfcfcf
+    --text-color: #f0f0f0
     --text-secondary-color: #797979
 
     --border-color: #2e2e2e
@@ -43,7 +43,7 @@
 
     --border-color: #d8d8d8
 
-    --accent-color: rgb(185, 166, 111)
+    --accent-color: rgb(230, 208, 143)
     --progress-trail-color: #999999
 
 [theme="dark-purple"]
@@ -217,8 +217,11 @@ body
             color: var(--text-color)
 
             .CircularProgressbar
+                overflow: visible
 
                 &-path
+                    filter: drop-shadow(0 0 5px var(--accent-color))
+
                     stroke: var(--accent-color)
 
                 &-trail
@@ -267,6 +270,28 @@ body
                 font-size: 2.5rem
 
                 background: none
+
+.timer-display
+    display: flex
+    justify-content: center
+    align-items: center
+
+    font-size: 3rem
+
+    font-family: Noto Sans Mono, monospace
+    font-weight: 300
+    color: var(--text-color)
+
+    .CircularProgressbar
+        overflow: visible
+
+        &-path
+            filter: drop-shadow(0 0 5px attr(data-mode))
+
+            stroke: var(--accent-color)
+
+        &-trail
+            stroke: var(--progress-trail-color)
 
 .modal-background
     position: fixed

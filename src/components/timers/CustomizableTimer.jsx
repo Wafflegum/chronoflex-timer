@@ -301,8 +301,10 @@ function CustomizableTimer({ id }) {
 								value={secondsRemaining}
 								strokeWidth={2}
 								styles={buildStyles({
-									pathColor: timeMode === "work" ? "light-dark(var(--accent-color))" : "#8eff8e",
+									pathColor: timeMode === "work" ? "var(--accent-color)" : "#8eff8e",
+									pathTransitionDuration: 0.25,
 								})}
+								data-mode={timeMode === "work" ? "var(--accent-color)" : "#8eff8e"}
 							>
 								{`${timeLeft.hours.toString().padStart(2, "0")}:${timeLeft.minutes
 									.toString()
